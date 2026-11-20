@@ -1,0 +1,897 @@
+/* =========================================================
+   Ochre Studio — static homepage
+   Built from Figma (Design / Homepage + Homepage-mobile).
+
+   Sizing model
+   ------------
+   Every dimension is written in "design pixels" multiplied by --u.
+   - Mobile  (< 1024px): --u = width / 390,  capped at 1.25 (≈ 488px)
+   - Desktop (≥ 1024px): --u = width / 1440, capped at 1    (1440px)
+   The page itself is capped at 1440px (max-width) and has a 320px
+   floor (min-width), so the layout scales smoothly between the two
+   artboards and never stretches past the design.
+   ========================================================= */
+
+:root {
+  --black: #000;
+  --white: #fff;
+  --font-display: "Satoshi", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "General Sans", "Helvetica Neue", Arial, sans-serif;
+
+  --page-min: 320px;
+  --page-max: 1440px;
+  --bp-desktop: 1024px; /* documented here; used literally in @media below */
+
+  /* mobile unit (fallback when no container ancestor, e.g. the menu) */
+  --u: calc(min(100vw, 487.5px) / 390);
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+html,
+body { margin: 0; background: var(--white); color: var(--black); }
+
+body {
+  min-width: var(--page-min);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, p, ul, ol, li { margin: 0; padding: 0; font-weight: inherit; font-size: inherit; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+/* Figma "text-box-trim: cap / alphabetic" — trims display type to cap height */
+.t-trim { text-box: trim-both cap alphabetic; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Page frame: min / max width ---------- */
+.page {
+  container-type: inline-size;
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  overflow-x: clip;
+  /* re-derive the unit from the page width (excludes scrollbar) */
+  --u: calc(min(100cqi, 487.5px) / 390);
+}
+
+/* Shared type primitives */
+.display { font-family: var(--font-display); font-weight: 400; line-height: 1; }
+
+/* =========================================================
+   MOBILE (base)
+   ========================================================= */
+
+/* ---------- Nav ---------- */
+.nav { display: none; }
+
+.nav-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(24 * var(--u));
+  background: var(--white);
+}
+
+.nav-mobile__logo,
+.menu__logo {
+  font-family: var(--font-display);
+  font-size: calc(32 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+}
+
+.nav-mobile__toggle {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 20px;
+}
+
+/* ---------- Mobile menu ---------- */
+.menu[hidden] { display: none; }
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.menu__panel {
+  /* Figma component is 391px tall; fill the screen so page content doesn't read as menu items */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(40 * var(--u));
+  padding: calc(24 * var(--u));
+  background: var(--white);
+  overflow-y: auto;
+}
+
+html.is-menu-open { overflow: hidden; }
+
+.menu__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu__close {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  background: var(--white);
+}
+
+.menu__image {
+  width: 100%;
+  aspect-ratio: 342 / 110;
+  overflow: hidden;
+}
+.menu__image img { width: 100%; height: 100%; object-fit: cover; }
+
+.menu__links {
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+  font-family: var(--font-display);
+  font-size: calc(38 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  display: flex;
+  flex-direction: column;
+  padding: 0 calc(24 * var(--u)) calc(24 * var(--u));
+}
+
+/* The big "Ochre / Studio" lockup is desktop only — keep it for screen readers */
+.hero__logo {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.hero__image {
+  width: 100%;
+  aspect-ratio: 342 / 304;
+  border-radius: calc(32 * var(--u));
+  overflow: hidden;
+}
+.hero__image img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- About ---------- */
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: calc(80 * var(--u));
+  padding: calc(24 * var(--u));
+}
+
+.about__text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(40 * var(--u));
+}
+
+.about__title {
+  font-family: var(--font-display);
+  font-size: calc(64 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.07em;
+}
+
+.about__lede {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: calc(16 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  text-indent: calc(84 * var(--u));
+}
+
+.process {
+  display: flex;
+  flex-direction: column;
+  gap: calc(32 * var(--u));
+}
+
+.process__item {
+  display: flex;
+  flex-direction: column;
+  gap: calc(32 * var(--u));
+}
+
+.process__row {
+  display: flex;
+  flex-direction: column;
+  gap: calc(32 * var(--u));
+}
+.process__item:first-child .process__row { gap: calc(16 * var(--u)); }
+
+.process__label {
+  display: flex;
+  align-items: center;
+  gap: calc(32 * var(--u));
+  font-family: var(--font-display);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.process__num {
+  font-size: calc(20 * var(--u));
+  letter-spacing: -0.03em;
+}
+
+.process__name {
+  font-size: calc(32 * var(--u));
+  letter-spacing: -0.05em;
+}
+
+.process__desc {
+  font-weight: 300;
+  font-size: calc(16 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.process__rule {
+  width: 100%;
+  height: 1px;
+}
+
+/* ---------- Projects ---------- */
+.project {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  aspect-ratio: 390 / 251;
+  padding: calc(24 * var(--u));
+  color: var(--white);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.project__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.project__num {
+  font-family: var(--font-display);
+  font-size: calc(20 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.project__content {
+  display: flex;
+  flex: 1 0 0;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.project__title {
+  font-family: var(--font-display);
+  font-size: calc(64 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+}
+
+.project__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(24 * var(--u));
+  width: 100%;
+}
+
+.project__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(12 * var(--u));
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: calc(12 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-align: right;
+  white-space: nowrap; /* single lines in both artboards; sizes scale with --u */
+}
+
+/* ---------- Button (Component: btn) ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(10 * var(--u));
+  border: 1px solid var(--white);
+  border-radius: 999px;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: calc(12 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ---------- Objects ---------- */
+.objects {
+  padding: calc(48 * var(--u)) calc(24 * var(--u)) calc(24 * var(--u));
+}
+
+.objects__intro {
+  display: flex;
+  flex-direction: column;
+  gap: calc(25 * var(--u));
+}
+
+/* On mobile the heading lines interleave with the copy */
+.objects__heading { display: contents; }
+
+.objects__line {
+  display: block;
+  font-family: var(--font-display);
+  font-size: calc(62 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+}
+.objects__line--1 { order: 1; }
+.objects__copy--1 { order: 2; }
+.objects__line--2 { order: 3; margin-left: calc(-2 * var(--u)); }
+.objects__copy--2 { order: 4; }
+.objects__line--3 { order: 5; margin-left: calc(50% + 11 * var(--u)); }
+
+.objects__copy {
+  font-weight: 300;
+  font-size: calc(16 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+.objects__copy a {
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-position: from-font;
+}
+
+.objects__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: calc(20 * var(--u));
+  row-gap: calc(24 * var(--u));
+  margin-top: calc(48 * var(--u));
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+  order: var(--m-order, 0);
+}
+
+.product--feature { grid-column: 1 / -1; }
+
+.product__image {
+  width: 100%;
+  aspect-ratio: 161 / 205;
+  overflow: hidden;
+}
+.product--feature .product__image { aspect-ratio: 342 / 381; }
+.product__image img { width: 100%; height: 100%; object-fit: cover; }
+
+.product__name {
+  font-family: var(--font-display);
+  font-size: calc(12 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* ---------- Contact ---------- */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: calc(48 * var(--u));
+  padding: calc(24 * var(--u));
+}
+
+.contact__top {
+  display: flex;
+  flex-direction: column;
+  gap: calc(64 * var(--u));
+}
+
+.contact__intro,
+.contact__details {
+  display: flex;
+  gap: calc(20 * var(--u));
+}
+
+.contact__intro { align-items: stretch; }
+.contact__details { align-items: flex-start; }
+
+.contact__intro-copy,
+.contact__details-copy {
+  display: flex;
+  flex: 1 0 0;
+  min-width: 0;
+  flex-direction: column;
+  gap: calc(32 * var(--u));
+}
+
+.contact__heading {
+  font-family: var(--font-display);
+  font-size: calc(32 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+.contact__intro .contact__heading { max-width: calc(159 * var(--u)); }
+
+.contact__body {
+  font-weight: 300;
+  font-size: calc(16 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.contact__intro-image {
+  position: relative;
+  flex: 1 0 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.contact__intro-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* mirrored in the mobile design */
+}
+
+.contact__info {
+  display: flex;
+  flex: 1 0 0;
+  min-width: 0;
+  gap: calc(52 * var(--u));
+}
+
+.contact__col {
+  display: flex;
+  flex: 1 0 0;
+  min-width: 0;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+}
+
+.info__label {
+  font-family: var(--font-display);
+  font-size: calc(12 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+  opacity: 0.5;
+}
+
+.info__value {
+  font-weight: 500;
+  font-size: calc(8 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.contact__image {
+  margin-inline: calc(-24 * var(--u));
+  aspect-ratio: 390 / 187;
+  overflow: hidden;
+}
+.contact__image img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Footer (Component: Footer / Mobile) ---------- */
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: calc(48 * var(--u));
+  padding: calc(24 * var(--u));
+  overflow: hidden;
+}
+
+.footer__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+}
+
+.footer__tagline {
+  width: calc(185 * var(--u));
+  font-family: var(--font-display);
+  font-size: calc(24 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.footer__group {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+  white-space: nowrap;
+}
+
+.footer__label {
+  font-family: var(--font-display);
+  font-size: calc(12 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+  opacity: 0.5;
+}
+
+.footer__list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+  font-weight: 500;
+  font-size: calc(8 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.footer__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.footer__word {
+  font-family: var(--font-display);
+  font-size: calc(32 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+}
+
+.footer__image {
+  width: calc(116 * var(--u));
+  aspect-ratio: 279 / 349;
+  overflow: hidden;
+}
+.footer__image img { width: 100%; height: 100%; object-fit: cover; }
+
+/* =========================================================
+   DESKTOP (≥ 1024px) — scales from the 1440 artboard
+   ========================================================= */
+@media (min-width: 1024px) {
+  .page { --u: calc(min(100cqi, 1440px) / 1440); }
+
+  /* Mobile-only pieces */
+  .nav-mobile,
+  .menu { display: none !important; }
+
+  /* ---------- Nav (Component: Nav) ---------- */
+  .nav {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: calc(64 * var(--u)) calc(80 * var(--u));
+    background: var(--white);
+    white-space: nowrap;
+  }
+
+  .nav__logo {
+    font-family: var(--font-display);
+    font-size: calc(32 * var(--u));
+    line-height: 1;
+    letter-spacing: -0.07em;
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: calc(196 * var(--u));
+    font-family: var(--font-display);
+    font-size: calc(24 * var(--u));
+    line-height: normal;
+    letter-spacing: -0.05em;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    gap: calc(64 * var(--u));
+    padding: 0 calc(80 * var(--u)) calc(80 * var(--u));
+  }
+
+  .hero__logo {
+    position: static;
+    width: auto; height: auto;
+    margin: 0; overflow: visible; clip: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: calc(180 * var(--u));
+    line-height: 1;
+    letter-spacing: -0.07em;
+  }
+
+  .hero__image {
+    aspect-ratio: auto;
+    height: calc(920 * var(--u));
+    border-radius: calc(32 * var(--u));
+  }
+
+  /* ---------- About ---------- */
+  .about {
+    gap: calc(160 * var(--u));
+    padding: calc(80 * var(--u));
+  }
+
+  .about__text { gap: calc(80 * var(--u)); }
+
+  .about__title { font-size: calc(152 * var(--u)); }
+
+  .about__lede {
+    font-size: calc(42 * var(--u));
+    text-indent: calc(84 * var(--u));
+  }
+
+  .process { gap: calc(64 * var(--u)); }
+
+  .process__row,
+  .process__item:first-child .process__row {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: calc(32 * var(--u));
+  }
+
+  .process__num { font-size: calc(38 * var(--u)); }
+  .process__name { font-size: calc(76 * var(--u)); }
+
+  .process__desc {
+    flex: 0 0 auto;
+    width: calc(424 * var(--u));
+    font-size: calc(24 * var(--u));
+  }
+
+  /* ---------- Projects ---------- */
+  .project {
+    aspect-ratio: auto;
+    height: calc(1024 * var(--u));
+    padding: calc(80 * var(--u));
+  }
+
+  .project__num { font-size: calc(38 * var(--u)); }
+
+  .project__content { flex: 0 1 auto; }
+
+  .project__title { font-size: calc(152 * var(--u)); }
+
+  .project__bottom {
+    gap: calc(56 * var(--u));
+    width: auto;
+  }
+
+  .project__meta {
+    gap: calc(32 * var(--u));
+    width: auto;
+    font-size: calc(38 * var(--u));
+  }
+
+  /* Casa Marna carries a soft top/bottom shade on desktop */
+  .project--casa-marna::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.14) 0%,
+      rgba(0, 0, 0, 0) 44.75%,
+      rgba(0, 0, 0, 0.2) 88.721%
+    );
+  }
+
+  /* Huset Eik is cropped slightly wider than the frame in the design */
+  .project--huset-eik .project__bg {
+    left: calc(-68 * var(--u));
+    width: calc(1536 * var(--u));
+  }
+
+  .btn {
+    padding: calc(24 * var(--u));
+    font-size: calc(38 * var(--u));
+  }
+
+  /* ---------- Objects ---------- */
+  .objects {
+    padding: 0 calc(80 * var(--u)) calc(80 * var(--u));
+  }
+
+  .objects__intro {
+    position: relative;
+    display: block;
+    height: calc(1024 * var(--u));
+    margin-inline: calc(-80 * var(--u));
+  }
+
+  .objects__heading { display: block; }
+
+  .objects__line,
+  .objects__copy {
+    position: absolute;
+    margin: 0;
+  }
+
+  .objects__line { font-size: calc(152 * var(--u)); }
+  .objects__line--1 { left: calc(183 * var(--u)); top: calc(237 * var(--u)); }
+  .objects__line--2 { left: calc(519 * var(--u)); top: calc(442 * var(--u)); margin-left: 0; }
+  .objects__line--3 { left: calc(176 * var(--u)); top: calc(647 * var(--u)); margin-left: 0; }
+
+  .objects__copy {
+    left: calc(954 * var(--u));
+    width: calc(406 * var(--u));
+    font-size: calc(24 * var(--u));
+  }
+  .objects__copy--1 { top: calc(160 * var(--u)); }
+  .objects__copy--2 { top: calc(647 * var(--u)); }
+
+  .objects__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: calc(24 * var(--u));
+    row-gap: calc(32 * var(--u));
+    margin-top: 0;
+  }
+
+  .product {
+    gap: calc(16 * var(--u));
+    order: 0;
+  }
+
+  .product--feature { grid-column: 2 / span 1; }
+
+  .product__image,
+  .product--feature .product__image { aspect-ratio: 302 / 376; }
+
+  .product__name { font-size: calc(16 * var(--u)); }
+
+  /* ---------- Contact ---------- */
+  .contact {
+    gap: calc(112 * var(--u));
+    padding: calc(80 * var(--u)) calc(80 * var(--u)) 0;
+  }
+
+  .contact__top { gap: calc(200 * var(--u)); }
+
+  .contact__intro {
+    gap: calc(100 * var(--u));
+    height: calc(864 * var(--u));
+  }
+
+  .contact__intro-copy {
+    flex: 0 0 auto;
+    width: calc(626 * var(--u));
+    justify-content: space-between;
+  }
+
+  .contact__details { gap: calc(97 * var(--u)); }
+
+  .contact__details-copy {
+    flex: 0 0 auto;
+    width: calc(626 * var(--u));
+  }
+
+  .contact__heading,
+  .contact__intro .contact__heading {
+    max-width: none;
+    font-size: calc(76 * var(--u));
+  }
+
+  .contact__body { font-size: calc(24 * var(--u)); }
+
+  .contact__intro-image img { transform: none; }
+
+  .contact__info {
+    justify-content: space-between;
+    gap: calc(24 * var(--u));
+  }
+
+  .contact__col {
+    flex: 0 0 auto;
+    gap: calc(74 * var(--u));
+  }
+  .contact__col:first-child { width: calc(278.5 * var(--u)); }
+
+  .info { gap: calc(16 * var(--u)); }
+  .info__label { font-size: calc(30 * var(--u)); }
+  .info__value { font-size: calc(24 * var(--u)); }
+
+  /* Full-bleed image running into the section's bottom edge */
+  .contact__image {
+    position: relative;
+    margin-inline: calc(-80 * var(--u));
+    aspect-ratio: auto;
+    height: calc(659 * var(--u));
+  }
+  .contact__image img {
+    position: absolute;
+    top: 0;
+    left: calc(-25 * var(--u));
+    width: calc(1504 * var(--u));
+    height: calc(695 * var(--u));
+    max-width: none;
+  }
+
+  /* ---------- Footer (Component: Footer / Desktop) ---------- */
+  .footer {
+    justify-content: space-between;
+    gap: calc(80 * var(--u));
+    height: calc(1024 * var(--u));
+    padding: calc(80 * var(--u));
+  }
+
+  .footer__tagline {
+    width: calc(655 * var(--u));
+    font-size: calc(76 * var(--u));
+  }
+
+  .footer__group { gap: calc(32 * var(--u)); }
+  .footer__label { font-size: calc(30 * var(--u)); }
+
+  .footer__list {
+    gap: calc(16 * var(--u));
+    font-size: calc(24 * var(--u));
+  }
+
+  .footer__word {
+    font-size: calc(180 * var(--u));
+    letter-spacing: -0.07em;
+  }
+
+  .footer__image { width: calc(279 * var(--u)); }
+}
+
+/* Keyboard focus */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
