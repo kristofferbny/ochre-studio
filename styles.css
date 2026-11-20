@@ -267,10 +267,13 @@ html.is-menu-open { overflow: hidden; }
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  aspect-ratio: 390 / 251;
+  /* 251px at 390, like Figma. The height comes from padding + content (as in
+     Figma's auto-layout); this is only a minimum, so the card grows instead of
+     clipping if a browser renders the text taller. */
+  min-height: calc(100cqi * 251 / 390);
   padding: calc(24 * var(--u));
   color: var(--white);
-  overflow: hidden;
+  clip-path: inset(0); /* clips the background image without clipping content height */
   isolation: isolate;
 }
 
@@ -296,10 +299,11 @@ html.is-menu-open { overflow: hidden; }
   display: flex;
   flex: 1 0 0;
   min-width: 0;
-  height: 100%;
+  align-self: stretch; /* fill the card height without relying on height: 100% */
   flex-direction: column;
   align-items: flex-end;
   justify-content: space-between;
+  gap: calc(72 * var(--u)); /* Figma mobile: title → bottom text */
 }
 
 .project__title {
@@ -698,8 +702,7 @@ html.is-menu-open { overflow: hidden; }
 
   /* ---------- Projects ---------- */
   .project {
-    aspect-ratio: auto;
-    height: calc(1024 * var(--u));
+    min-height: calc(1024 * var(--u));
     padding: calc(80 * var(--u));
   }
 
