@@ -111,7 +111,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .nav-mobile__logo,
 .menu__logo {
   font-family: var(--font-display);
-  font-size: calc(32 * var(--u));
+  font-size: calc(20 * var(--u)); /* Figma: 32px; reduced so project titles (64px) clearly lead */
   line-height: 1;
   letter-spacing: -0.07em;
   white-space: nowrap;
@@ -1010,11 +1010,15 @@ html.is-menu-open { overflow: hidden; }
   gap: calc(40 * var(--u));
 }
 
-.p-intro__head {
-  display: flex;
-  flex-direction: column;
-  gap: calc(16 * var(--u));
-}
+/* Mobile: head and body are flattened into one column so the order can be
+   title → copy → note → image (the note sits right above the first image) */
+.p-intro__head,
+.p-intro__body { display: contents; }
+
+.p-intro__title { order: 1; }
+.p-intro__copy  { order: 2; }
+.p-intro__note  { order: 3; margin-bottom: calc(-28 * var(--u)); /* 40 gap − 28 = 12px above the image */ }
+.p-intro__image { order: 4; }
 
 .p-intro__title {
   font-family: var(--font-display);
@@ -1028,12 +1032,6 @@ html.is-menu-open { overflow: hidden; }
   font-size: calc(12 * var(--u));
   line-height: 1;
   letter-spacing: -0.03em;
-}
-
-.p-intro__body {
-  display: flex;
-  flex-direction: column;
-  gap: calc(40 * var(--u));
 }
 
 .p-intro__copy {
@@ -1133,6 +1131,7 @@ html.is-menu-open { overflow: hidden; }
   .p-intro { gap: calc(80 * var(--u)); }
 
   .p-intro__head {
+    display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
@@ -1145,11 +1144,13 @@ html.is-menu-open { overflow: hidden; }
   }
 
   .p-intro__note {
+    margin-bottom: 0;
     font-size: calc(20 * var(--u));
     white-space: nowrap;
   }
 
   .p-intro__body {
+    display: flex;
     flex-direction: row;
     align-items: stretch;
     justify-content: space-between;
@@ -1255,4 +1256,44 @@ main:focus { outline: none; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* =========================================================
+   STICKY HEADER — blend mode (Snøhetta-style)
+   White text with mix-blend-mode: difference: black over white, light over
+   dark images, and each letter shifts with whatever scrolls underneath.
+   ========================================================= */
+.page {
+  /* Fixed header height, so project heroes can sit exactly underneath it */
+  --header-h: calc(71 * var(--u));
+}
+@media (min-width: 1024px) {
+  .page { --header-h: calc(87 * var(--u)); }
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  color: var(--white);
+  mix-blend-mode: difference;
+}
+
+/* Transparent bars of a fixed height (padding unchanged; text sits in the remaining space) */
+.site-header .nav,
+.site-header .nav-mobile {
+  height: var(--header-h);
+  background: transparent;
+}
+
+/* burger-lines.svg is black lines on transparent; inverted they turn white */
+.nav-mobile__toggle img { filter: invert(1); }
+
+/* Project pages: the hero image starts at the very top, behind the nav */
+.page--project .p-hero { margin-top: calc(-1 * var(--header-h)); }
+
+/* In-page links land below the sticky header instead of under it */
+html { scroll-padding-top: calc(min(100vw, 487.5px) / 390 * 71); }
+@media (min-width: 1024px) {
+  html { scroll-padding-top: calc(min(100vw, 1440px) / 1440 * 87); }
 }

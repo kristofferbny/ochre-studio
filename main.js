@@ -1,4 +1,6 @@
-// Ochre Studio — mobile menu (static, no motion yet)
+// Ochre Studio
+
+// Mobile menu (static, no motion yet)
 (() => {
   const toggle = document.querySelector('.nav-mobile__toggle');
   const menu = document.getElementById('mobile-menu');
