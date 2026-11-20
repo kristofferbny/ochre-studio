@@ -3,15 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ochre Studio</title>
-  <meta name="description" content="Ochre Studio design interiors in stone and wood, and make the objects that live within them.">
-  <link rel="preconnect" href="https://api.fontshare.com">
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&display=swap">
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@300,500&display=swap">
+  <title>Ochre Studio — Interiors and objects in stone, wood and clay</title>
+  <meta name="description" content="Ochre Studio designs interiors in stone and wood, and makes the ceramics that live within them. Based in Oslo.">
+  <link rel="canonical" href="https://ochre-studio.vercel.app/">
+
+  <!-- Security (meta-level; the full set is sent as HTTP headers, see vercel.json) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Browser / device -->
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Icons -->
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Social sharing (Open Graph / X) -->
+  <meta property="og:site_name" content="Ochre Studio">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ochre Studio — Interiors and objects in stone, wood and clay">
+  <meta property="og:description" content="Ochre Studio designs interiors in stone and wood, and makes the ceramics that live within them. Based in Oslo.">
+  <meta property="og:url" content="https://ochre-studio.vercel.app/">
+  <meta property="og:image" content="https://ochre-studio.vercel.app/assets/og/home.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A timber daybed inside a red sandstone cave">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Performance -->
+  <link rel="preload" href="assets/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/GeneralSans-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/images/hero-cave.jpg" as="image" fetchpriority="high">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+  <a class="skip-link" href="#top">Skip to content</a>
 
   <div class="page">
 
@@ -33,7 +66,7 @@
     </button>
   </header>
 
-  <main id="top">
+  <main id="top" tabindex="-1">
 
     <!-- ============ HERO ============ -->
     <section class="hero" data-node-id="68:499">
@@ -42,7 +75,7 @@
         <span class="t-trim">Studio</span>
       </h1>
       <div class="hero__image">
-        <img src="assets/images/hero-cave.jpg" alt="A dark timber daybed and stone side table inside a red sandstone cave">
+        <img src="assets/images/hero-cave.jpg" fetchpriority="high" alt="A dark timber daybed and stone side table inside a red sandstone cave">
       </div>
     </section>
 
@@ -190,47 +223,47 @@
       </div>
 
       <ul class="objects__grid">
-        <li class="product product--feature" style="--m-order:1">
+        <li class="product product--feature">
           <div class="product__image"><img src="assets/images/product-tall-cup-stone.jpg" alt="Tall cup in stone glaze" loading="lazy"></div>
           <p class="product__name t-trim">Tall Cup – Stone</p>
         </li>
-        <li class="product" style="--m-order:11">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-tall-cup-moss.jpg" alt="Tall cup in moss glaze" loading="lazy"></div>
           <p class="product__name t-trim">Tall Cup – Moss</p>
         </li>
-        <li class="product" style="--m-order:10">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-jug-stone.jpg" alt="Jug in stone glaze" loading="lazy"></div>
           <p class="product__name t-trim">Jug – Stone</p>
         </li>
-        <li class="product" style="--m-order:2">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-cup-basalt.jpg" alt="Cup in basalt glaze" loading="lazy"></div>
           <p class="product__name t-trim">Cup – Basalt</p>
         </li>
-        <li class="product" style="--m-order:9">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-carafe-moss.jpg" alt="Carafe in moss glaze" loading="lazy"></div>
           <p class="product__name t-trim">Carafe – Moss</p>
         </li>
-        <li class="product" style="--m-order:8">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-wide-bowl-stone.jpg" alt="Wide bowl in stone glaze" loading="lazy"></div>
           <p class="product__name t-trim">Wide Bowl – Stone</p>
         </li>
-        <li class="product" style="--m-order:7">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-bowl-moss.jpg" alt="Bowl in moss glaze" loading="lazy"></div>
           <p class="product__name t-trim">Bowl – Moss</p>
         </li>
-        <li class="product" style="--m-order:3">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-oval-plate-moss.jpg" alt="Oval plate in moss glaze" loading="lazy"></div>
           <p class="product__name t-trim">Oval Plate – Moss</p>
         </li>
-        <li class="product" style="--m-order:6">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-bottle-vase-basalt.jpg" alt="Bottle vase in basalt glaze" loading="lazy"></div>
           <p class="product__name t-trim">Bottle Vase – Basalt</p>
         </li>
-        <li class="product" style="--m-order:5">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-lidded-jar-basalt.jpg" alt="Lidded jar in basalt glaze" loading="lazy"></div>
           <p class="product__name t-trim">Lidded Jar – Basalt</p>
         </li>
-        <li class="product" style="--m-order:4">
+        <li class="product">
           <div class="product__image"><img src="assets/images/product-vase-stone.jpg" alt="Vase in stone glaze" loading="lazy"></div>
           <p class="product__name t-trim">Vase – Stone</p>
         </li>

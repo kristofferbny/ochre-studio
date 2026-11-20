@@ -13,6 +13,28 @@
    images reach the edges and columns widen. 320px is the floor.
    ========================================================= */
 
+/* ---------- Fonts (self-hosted from Fontshare, ITF Free Font License) ---------- */
+@font-face {
+  font-family: "Satoshi";
+  src: url("assets/fonts/Satoshi-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("assets/fonts/Satoshi-Medium.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "General Sans";
+  src: url("assets/fonts/GeneralSans-Light.woff2") format("woff2");
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "General Sans";
+  src: url("assets/fonts/GeneralSans-Medium.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+
 :root {
   --black: #000;
   --white: #fff;
@@ -409,6 +431,19 @@ html.is-menu-open { overflow: hidden; }
 }
 
 .product--feature { grid-column: 1 / -1; }
+
+/* Mobile order differs from desktop (Figma Homepage-mobile) */
+.product:nth-child(1) { --m-order: 1; }
+.product:nth-child(2) { --m-order: 11; }
+.product:nth-child(3) { --m-order: 10; }
+.product:nth-child(4) { --m-order: 2; }
+.product:nth-child(5) { --m-order: 9; }
+.product:nth-child(6) { --m-order: 8; }
+.product:nth-child(7) { --m-order: 7; }
+.product:nth-child(8) { --m-order: 3; }
+.product:nth-child(9) { --m-order: 6; }
+.product:nth-child(10) { --m-order: 5; }
+.product:nth-child(11) { --m-order: 4; }
 
 .product__image {
   width: 100%;
@@ -1144,4 +1179,80 @@ html.is-menu-open { overflow: hidden; }
   .p-field { gap: calc(16 * var(--u)); }
   .p-field__row { font-size: calc(38 * var(--u)); }
   .p-field__value { gap: calc(16 * var(--u)); }
+}
+
+/* =========================================================
+   404
+   ========================================================= */
+.notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(32 * var(--u));
+  min-height: 60vh;
+  padding: calc(64 * var(--u)) calc(24 * var(--u)) calc(80 * var(--u));
+}
+
+.notfound__title {
+  font-family: var(--font-display);
+  font-size: calc(64 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.07em;
+}
+
+.notfound__text {
+  max-width: 34em;
+  font-weight: 300;
+  font-size: calc(16 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.notfound__link {
+  font-family: var(--font-display);
+  font-size: calc(20 * var(--u));
+  letter-spacing: -0.03em;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (min-width: 1024px) {
+  .notfound {
+    gap: calc(64 * var(--u));
+    padding: calc(160 * var(--u)) calc(80 * var(--u));
+  }
+  .notfound__title { font-size: calc(152 * var(--u)); }
+  .notfound__text { font-size: calc(24 * var(--u)); }
+  .notfound__link { font-size: calc(38 * var(--u)); }
+}
+
+/* =========================================================
+   Accessibility
+   ========================================================= */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 200;
+  padding: 12px 16px;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 16px;
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+main:focus { outline: none; }
+
+/* Respect reduced-motion now, so the upcoming motion work starts from a safe default */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

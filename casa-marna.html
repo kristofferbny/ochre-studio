@@ -4,14 +4,47 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Casa Marna — Ochre Studio</title>
-  <meta name="description" content="Set into the white marl cliffs of the Sicilian coast, Casa Marna was shaped around the rock rather than against it. The brief was simple: a summer house that feels as if it has always been part of the landscape.">
-  <link rel="preconnect" href="https://api.fontshare.com">
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&display=swap">
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@300,500&display=swap">
+  <meta name="description" content="Casa Marna: a summer house carved into the white marl cliffs of Sicily, in lime plaster, local limestone and olive wood.">
+  <link rel="canonical" href="https://ochre-studio.vercel.app/casa-marna.html">
+
+  <!-- Security (meta-level; the full set is sent as HTTP headers, see vercel.json) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Browser / device -->
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Icons -->
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Social sharing (Open Graph / X) -->
+  <meta property="og:site_name" content="Ochre Studio">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Casa Marna — Ochre Studio">
+  <meta property="og:description" content="Casa Marna: a summer house carved into the white marl cliffs of Sicily, in lime plaster, local limestone and olive wood.">
+  <meta property="og:url" content="https://ochre-studio.vercel.app/casa-marna.html">
+  <meta property="og:image" content="https://ochre-studio.vercel.app/assets/og/casa-marna.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Casa Marna, a lime-plastered house set into white sea cliffs">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Performance -->
+  <link rel="preload" href="assets/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/GeneralSans-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/images/project-casa-marna.jpg" as="image" fetchpriority="high">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+  <a class="skip-link" href="#top">Skip to content</a>
 
   <div class="page">
 
@@ -33,11 +66,11 @@
     </button>
   </header>
 
-  <main id="top">
+  <main id="top" tabindex="-1">
 
     <!-- ============ PROJECT HERO ============ -->
     <section class="p-hero" data-node-id="68:658">
-      <img class="p-hero__bg" src="assets/images/project-casa-marna.jpg" alt="A lime-plastered house set into white sea cliffs above a stone terrace">
+      <img class="p-hero__bg" fetchpriority="high" src="assets/images/project-casa-marna.jpg" alt="A lime-plastered house set into white sea cliffs above a stone terrace">
       <h1 class="p-hero__title t-trim">Casa Marna</h1>
     </section>
 
