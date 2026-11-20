@@ -83,7 +83,8 @@ This is a static site: no server code, no database, no logins, no forms. That re
 - [x] Visible focus outlines.
 - [x] Menu opens/closes with keyboard, Escape closes it, focus returns to the burger button.
 - [x] Reduced-motion setting respected. This matters for the upcoming motion work: animations should be disabled or calmer for people who've asked their OS for less motion.
-- [ ] **Text that's too small on mobile.** The mobile footer and the mobile contact details use 8px text (from the Figma design). That's below what most people can read comfortably; 12px is a practical minimum.
+- [x] **12px minimum text size.** Small text (contact details, footer lists, labels, product names) never drops below 12px. The mobile contact block now stacks so the larger text fits.
+- [x] **Responsive sweep:** all six pages checked at 25 widths from 320px to 2560px for sideways scrolling, overlapping text and text overflowing its box.
 - [ ] **White text on photos.** Check contrast on the project cards, especially pale images (Casa Marna, Kaya). A subtle dark gradient (like Casa Marna's desktop card) helps.
 - [ ] **Trap focus inside the open mobile menu,** so Tab can't wander to the page behind it.
 - [ ] **Test with a screen reader:** VoiceOver on Mac/iPhone (Cmd+F5 to toggle on Mac).
