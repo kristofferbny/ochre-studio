@@ -409,7 +409,7 @@ html.is-menu-open { overflow: hidden; }
   line-height: 1.3;
   letter-spacing: -0.02em;
 }
-.objects__copy a {
+.objects__email {
   text-decoration: underline;
   text-decoration-thickness: from-font;
   text-underline-position: from-font;

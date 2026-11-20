@@ -22,7 +22,9 @@ This is a static site: no server code, no database, no logins, no forms. That re
 - [ ] **Turn on 2-factor login** for GitHub and Vercel. These accounts *are* your website's security.
 - [ ] **Never commit secrets.** No API keys, passwords or `.env` files in the repo, ever. Anything in a public repo or in a web page's code is public. (Nothing like that is in this project.)
 - [ ] **If you add a contact form later:** use a form service with spam protection (Formspree, Basin) or a Vercel function, validate on the server side, and add a privacy note.
-- [ ] **The contact details belong to real people.** `ochre.com` is a real, registered domain with a working mail server, so `studio@ochre.com` emails a stranger. `+47 012 34 567` is a valid Norwegian mobile number format, and Akersbakken 12 is a real Oslo address. For a concept piece, make the details non-clickable or obviously fictional, or use your own.
+- [ ] **The contact details belong to real people.** `ochre.com` is a real, registered domain with a working mail server, so `studio@ochre.com` emails a stranger. The original phone number had a valid Norwegian mobile format, and Akersbakken 12 is a real Oslo address. For a concept piece, make the details non-clickable or obviously fictional, or use your own.
+  - [x] Email and phone are plain text now (no `mailto:`/`tel:` links), and phones are told not to auto-link them.
+  - [x] Phone number replaced with `+47 012 34 567`. Norwegian 8-digit numbers start with 2–9, so this shouldn't reach anyone (worth a quick check against Nkom's numbering plan).
 - [ ] *Optional:* `/.well-known/security.txt` with a contact address for people reporting vulnerabilities.
 
 ## 2. Privacy & legal (Norway / EU)
