@@ -31,10 +31,10 @@ This is a static site: no server code, no database, no logins, no forms. That re
 
 - [x] **Fonts self-hosted.** Loading Google Fonts/Fontshare from their CDN sends each visitor's IP address to a third party, which European data-protection authorities have objected to. Now nothing leaves your domain.
 - [x] **No cookies, no tracking.** So no cookie banner is needed. If you add analytics, prefer a cookieless one (Plausible, Fathom, Simple Analytics) and you still won't need a banner.
-- [x] **AI imagery labelled** in each project's details ("Imagery: AI-generated"), and Kaya marked as concept visuals.
+- [x] **The site stays in-world.** No AI or "concept project" labels on the site itself; Kaya's "concept visuals" note is part of the story (an unbuilt hotel).
 - [x] **Business information / org. number:** not needed. Ochre Studio isn't a real business.
 - [x] **No structured business data.** The homepage no longer tells search engines that a business exists at that address and phone number.
-- [ ] **Label it as a concept.** A small "Concept project by …" credit (footer or project pages) stops visitors and search engines from mistaking it for a real studio, and credits you.
+- [ ] **Disclose on your portfolio page:** that Ochre Studio is fictional, that most imagery is AI-generated, and that three photos are from Unsplash/Pexels (homepage Huset Eik card, both contact-section images). Link to the live site from there.
 - [x] **Privacy policy:** not needed while the site collects nothing. Vercel Analytics, if you turn it on, is cookieless.
 - [ ] **Photo licences.** Three photos come from Unsplash/Pexels (homepage Huset Eik card, contact interior, contact stone). Their licences allow this use; credit is appreciated but not required. Check the source of every other image too.
 - [ ] **Font licences.** Satoshi and General Sans are under the ITF Free Font License, which allows commercial and web use. Keep a copy of the licence with the fonts.
