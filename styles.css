@@ -254,9 +254,11 @@ html.is-menu-open { overflow: hidden; }
   letter-spacing: -0.02em;
 }
 
-.process__rule {
+.process__rule,
+.p-field__rule {
   width: 100%;
   height: 1px;
+  margin-top: -1px; /* Figma draws these 0-height lines inside the gap above */
 }
 
 /* ---------- Projects ---------- */
@@ -900,4 +902,243 @@ html.is-menu-open { overflow: hidden; }
 :focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 4px;
+}
+
+/* =========================================================
+   PROJECT PAGES (casa-marna.html, kaya.html, barro.html)
+   Desktop from Figma "Project …" frames (1440).
+   Mobile adapted from the homepage's mobile patterns
+   (no mobile project frames exist in Figma yet).
+   ========================================================= */
+
+/* ---------- Project hero ---------- */
+.p-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  aspect-ratio: 390 / 420;
+  padding: calc(24 * var(--u));
+  color: var(--white);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.p-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.p-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.14) 0%,
+    rgba(0, 0, 0, 0) 44.75%,
+    rgba(0, 0, 0, 0.2) 88.721%
+  );
+}
+
+/* Huset Eik's hero has no shading in Figma */
+.p-hero--plain::before { content: none; }
+
+.p-hero__title {
+  font-family: var(--font-display);
+  font-size: calc(64 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+}
+
+/* ---------- Project body ---------- */
+.p-about {
+  display: flex;
+  flex-direction: column;
+  gap: calc(80 * var(--u));
+  padding: calc(64 * var(--u)) calc(24 * var(--u)) calc(24 * var(--u));
+}
+
+.p-info,
+.p-intro {
+  display: flex;
+  flex-direction: column;
+  gap: calc(40 * var(--u));
+}
+
+.p-intro__head {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+}
+
+.p-intro__title {
+  font-family: var(--font-display);
+  font-size: calc(32 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.p-intro__note {
+  font-family: var(--font-display);
+  font-size: calc(12 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.p-intro__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(40 * var(--u));
+}
+
+.p-intro__copy {
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+  font-weight: 300;
+  font-size: calc(16 * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.p-intro__image,
+.p-gallery__item {
+  overflow: hidden;
+}
+.p-intro__image { aspect-ratio: 514 / 640; }
+.p-gallery__item { aspect-ratio: 608 / 757; }
+
+.p-intro__image img,
+.p-gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.p-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(24 * var(--u));
+}
+
+/* ---------- Project details (index) ---------- */
+.p-details {
+  display: flex;
+  flex-direction: column;
+  gap: calc(32 * var(--u));
+}
+
+.p-details__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: calc(24 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.p-details__list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(20 * var(--u));
+}
+
+.p-field {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+}
+
+.p-field__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  font-family: var(--font-display);
+  font-size: calc(16 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.p-field__value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(8 * var(--u));
+  font-weight: 500;
+  text-align: right;
+}
+
+
+@media (min-width: 1024px) {
+  .p-hero {
+    aspect-ratio: auto;
+    height: calc(1024 * var(--u));
+    padding: calc(80 * var(--u));
+  }
+
+  .p-hero__title { font-size: calc(152 * var(--u)); }
+
+  .p-about {
+    gap: calc(160 * var(--u));
+    padding: calc(160 * var(--u)) calc(80 * var(--u)) calc(80 * var(--u));
+  }
+
+  .p-info,
+  .p-intro { gap: calc(80 * var(--u)); }
+
+  .p-intro__head {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: calc(32 * var(--u));
+  }
+
+  .p-intro__title {
+    width: calc(669 * var(--u));
+    font-size: calc(76 * var(--u));
+  }
+
+  .p-intro__note {
+    font-size: calc(20 * var(--u));
+    white-space: nowrap;
+  }
+
+  .p-intro__body {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: calc(32 * var(--u));
+  }
+
+  .p-intro__copy {
+    flex: 0 0 auto;
+    width: calc(647 * var(--u));
+    justify-content: space-between;
+    font-size: calc(24 * var(--u));
+  }
+
+  .p-intro__image {
+    flex: 0 0 auto;
+    width: calc(514 * var(--u));
+  }
+
+  .p-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(64 * var(--u));
+  }
+
+  .p-details { gap: calc(64 * var(--u)); }
+  .p-details__title { font-size: calc(46 * var(--u)); }
+  .p-details__list { gap: calc(40 * var(--u)); }
+  .p-field { gap: calc(16 * var(--u)); }
+  .p-field__row { font-size: calc(38 * var(--u)); }
+  .p-field__value { gap: calc(16 * var(--u)); }
 }
