@@ -13,8 +13,8 @@ A list of the "behind the scenes" things a website needs before it goes live, wr
 
 This is a static site: no server code, no database, no logins, no forms. That removes most attack surface. What's left is about how the files are delivered and what the page is allowed to load.
 
-- [x] **No third-party scripts or styles.** Everything (fonts included) loads from your own domain.
-- [x] **Content-Security-Policy.** Each page tells the browser to load scripts, styles, fonts and images only from your own site. If someone managed to inject code, the browser would refuse to run it. Set in each page's `<head>` and, more completely, as HTTP headers in `vercel.json`.
+- [x] **No third-party scripts.** Everything loads from your own domain except the fonts, which come from Fontshare (see Privacy & legal).
+- [x] **Content-Security-Policy.** Each page tells the browser to load scripts and images only from your own site, and styles/fonts only from your site and Fontshare. If someone managed to inject code, the browser would refuse to run it. Set in each page's `<head>` and, more completely, as HTTP headers in `vercel.json`.
 - [x] **No inline scripts or inline styles** (needed for the strict policy above to work).
 - [x] **Security headers** in `vercel.json`: HTTPS-only (HSTS), no MIME sniffing, no framing (clickjacking protection), referrer policy, permissions policy.
 - [x] **HTTPS.** Vercel provides it automatically on `*.vercel.app`.
@@ -29,7 +29,7 @@ This is a static site: no server code, no database, no logins, no forms. That re
 
 ## 2. Privacy & legal (Norway / EU)
 
-- [x] **Fonts self-hosted.** Loading Google Fonts/Fontshare from their CDN sends each visitor's IP address to a third party, which European data-protection authorities have objected to. Now nothing leaves your domain.
+- [x] **Fonts load from Fontshare's servers.** Their licence (ITF FFL §02) forbids putting the font files in a public repository, and this repo is public, so the files were removed (including from git history). Trade-off: each visitor's IP address reaches Fontshare, which European data-protection authorities have objected to for font CDNs. Acceptable for a portfolio piece; for a real business, self-host from a private repo instead.
 - [x] **No cookies, no tracking.** So no cookie banner is needed. If you add analytics, prefer a cookieless one (Plausible, Fathom, Simple Analytics) and you still won't need a banner.
 - [x] **The site stays in-world.** No AI or "concept project" labels on the site itself; Kaya's "concept visuals" note is part of the story (an unbuilt hotel).
 - [x] **Business information / org. number:** not needed. Ochre Studio isn't a real business.
@@ -37,7 +37,7 @@ This is a static site: no server code, no database, no logins, no forms. That re
 - [ ] **Disclose on your portfolio page:** that Ochre Studio is fictional, that most imagery is AI-generated, and that three photos are from Unsplash/Pexels (homepage Huset Eik card, both contact-section images). Link to the live site from there.
 - [x] **Privacy policy:** not needed while the site collects nothing. Vercel Analytics, if you turn it on, is cookieless.
 - [ ] **Photo licences.** Three photos come from Unsplash/Pexels (homepage Huset Eik card, contact interior, contact stone). Their licences allow this use; credit is appreciated but not required. Check the source of every other image too.
-- [ ] **Font licences.** Satoshi and General Sans are under the ITF Free Font License, which allows commercial and web use. Keep a copy of the licence with the fonts.
+- [x] **Font licences.** Satoshi and General Sans are under the ITF Free Font License (fontshare.com/licenses/itf-ffl): free for commercial and web use; self-hosting allowed, public redistribution of the files not.
 
 ## 3. Search engines & sharing
 
@@ -69,10 +69,10 @@ This is a static site: no server code, no database, no logins, no forms. That re
 ## 5. Performance
 
 - [x] Images below the first screen load lazily.
-- [x] Hero image and main fonts are preloaded, so the first screen appears faster.
+- [x] Hero image is preloaded and Fontshare's servers are pre-connected, so the first screen appears faster.
 - [x] The three 8–10MB photos replaced with web-sized versions (originals kept in `assets/source/`, not in git).
-- [x] Fonts are small (≈100KB total), self-hosted, `font-display: swap`.
-- [x] Caching headers for images and fonts in `vercel.json`.
+- [x] Fonts are small (≈100KB total) and use `font-display: swap`, so text shows immediately in a fallback font.
+- [x] Caching headers for images in `vercel.json`.
 - [ ] **`footer-coast.png` is 1.5MB** for a 279px-wide image. Convert to JPEG/WebP at about 600px wide.
 - [ ] **Modern formats + responsive images.** Serving WebP/AVIF with `srcset` (smaller files for phones) would roughly halve page weight.
 - [ ] **Run Lighthouse** (Chrome DevTools → Lighthouse) on the live site; aim for 90+ in every category.
@@ -102,6 +102,7 @@ This is a static site: no server code, no database, no logins, no forms. That re
 - [ ] **Import the GitHub repo into Vercel** (vercel.com → Add New → Project). Framework preset: **Other**. No build command, output directory = the repo root. Every push to `main` then deploys automatically.
 - [x] **Preview deploys:** Vercel builds a preview URL for every branch and PR, and marks previews `noindex` automatically.
 - [ ] *Optional:* uptime monitoring (UptimeRobot, free) to be emailed if the site goes down.
+- [x] **Public repo audited:** no secrets, local paths, personal files or image metadata. Commits use GitHub's no-reply email.
 - [x] **Version control.** The site is in git and on GitHub, so every version is recoverable.
 
 ## 9. Habits when vibecoding

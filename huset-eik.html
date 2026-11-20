@@ -8,7 +8,7 @@
   <link rel="canonical" href="https://ochre-studio.vercel.app/huset-eik.html">
 
   <!-- Security (meta-level; the full set is sent as HTTP headers, see vercel.json) -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' api.fontshare.com; img-src 'self' data:; font-src 'self' cdn.fontshare.com; connect-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- Browser / device -->
@@ -36,8 +36,11 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- Performance -->
-  <link rel="preload" href="assets/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/GeneralSans-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <!-- Fonts served by Fontshare (the ITF licence doesn't allow the files in a public repo) -->
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500&amp;display=swap">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@300,500&amp;display=swap">
   <link rel="preload" href="assets/images/huset-eik-hero.jpg" as="image" fetchpriority="high">
 
   <link rel="stylesheet" href="styles.css">
