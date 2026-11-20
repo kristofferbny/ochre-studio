@@ -613,9 +613,9 @@ html.is-menu-open { overflow: hidden; }
   /* ---------- Nav (Component: Nav) ---------- */
   .nav {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end; /* trimmed type: bottom edge = baseline, so logo and links share a baseline */
     justify-content: space-between;
-    padding: calc(64 * var(--u)) calc(80 * var(--u));
+    padding: calc(32 * var(--u)) calc(80 * var(--u)); /* Figma: 64px vertical — reduced */
     background: var(--white);
     white-space: nowrap;
   }
