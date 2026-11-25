@@ -13,7 +13,7 @@ A list of the "behind the scenes" things a website needs before it goes live, wr
 
 This is a static site: no server code, no database, no logins, no forms. That removes most attack surface. What's left is about how the files are delivered and what the page is allowed to load.
 
-- [x] **No third-party scripts.** Everything loads from your own domain except the fonts, which come from Fontshare (see Privacy & legal).
+- [x] **No third-party scripts.** Everything loads from your own domain except the fonts, which come from Fontshare (see Privacy & legal). GSAP 3.15.1 and its plugins are self-hosted in `assets/js/vendor/` (free under GSAP's Standard License, which allows redistribution).
 - [x] **Content-Security-Policy.** Each page tells the browser to load scripts and images only from your own site, and styles/fonts only from your site and Fontshare. If someone managed to inject code, the browser would refuse to run it. Set in each page's `<head>` and, more completely, as HTTP headers in `vercel.json`.
 - [x] **No inline scripts or inline styles** (needed for the strict policy above to work).
 - [x] **Security headers** in `vercel.json`: HTTPS-only (HSTS), no MIME sniffing, no framing (clickjacking protection), referrer policy, permissions policy.
@@ -76,13 +76,15 @@ This is a static site: no server code, no database, no logins, no forms. That re
 - [ ] **`footer-coast.png` is 1.5MB** for a 279px-wide image. Convert to JPEG/WebP at about 600px wide.
 - [ ] **Modern formats + responsive images.** Serving WebP/AVIF with `srcset` (smaller files for phones) would roughly halve page weight.
 - [ ] **Run Lighthouse** (Chrome DevTools → Lighthouse) on the live site; aim for 90+ in every category.
+- [x] **Motion scripts:** about 88KB compressed in total (GSAP core, ScrollTrigger, ScrollSmoother, SplitText, CustomEase, Flip, MorphSVG, plus `motion.js`).
 
 ## 6. Accessibility
 
 - [x] "Skip to content" link for keyboard users (press Tab on page load).
 - [x] Visible focus outlines.
 - [x] Menu opens/closes with keyboard, Escape closes it, focus returns to the burger button.
-- [x] Reduced-motion setting respected. This matters for the upcoming motion work: animations should be disabled or calmer for people who've asked their OS for less motion.
+- [x] Reduced-motion setting respected. With "reduce motion" on, none of the GSAP motion runs (no smooth scroll, reveals or page transitions); the site stays the static design.
+- [ ] **Test reduced motion yourself:** macOS System Settings → Accessibility → Display → Reduce motion, then reload the site.
 - [x] **12px minimum text size.** Small text (contact details, footer lists, labels, product names) never drops below 12px. The mobile contact block now stacks so the larger text fits.
 - [x] **Responsive sweep:** all six pages checked at 25 widths from 320px to 2560px for sideways scrolling, overlapping text and text overflowing its box.
 - [ ] **White text on photos.** Check contrast on the project cards, especially pale images (Casa Marna, Kaya). A subtle dark gradient (like Casa Marna's desktop card) helps.

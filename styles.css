@@ -1304,24 +1304,38 @@ main:focus { outline: none; }
 }
 
 /* =========================================================
-   STICKY HEADER — blend mode (Snøhetta-style)
+   FIXED HEADER — blend mode (Snøhetta-style)
    White text with mix-blend-mode: difference: black over white, light over
    dark images, and each letter shifts with whatever scrolls underneath.
+   The header sits outside the smooth-scroll wrapper (ScrollSmoother moves
+   the page with transforms, which would carry a sticky header away), so it
+   is position: fixed and is its own size container for --u.
    ========================================================= */
-.page {
-  /* Fixed header height, so project heroes can sit exactly underneath it */
+.page,
+.site-header {
+  /* Fixed header height, so content and project heroes line up with it */
   --header-h: calc(71 * var(--u));
 }
 @media (min-width: 1024px) {
-  .page { --header-h: calc(87 * var(--u)); }
+  .page,
+  .site-header { --header-h: calc(87 * var(--u)); }
 }
 
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
+  min-width: var(--page-min);
+  container-type: inline-size;
   color: var(--white);
   mix-blend-mode: difference;
+}
+/* Same unit as .page, measured on the header's own width */
+.site-header { --u: calc(min(100cqi, 487.5px) / 390); }
+@media (min-width: 1024px) {
+  .site-header { --u: calc(min(100cqi, 1440px) / 1440); }
 }
 
 /* Transparent bars of a fixed height (padding unchanged; text sits in the remaining space) */
@@ -1331,14 +1345,60 @@ main:focus { outline: none; }
   background: transparent;
 }
 
-/* burger-lines.svg is black lines on transparent; inverted they turn white */
-.nav-mobile__toggle img { filter: invert(1); }
+/* Burger: inline SVG lines in the header's white (MorphSVG turns them into a cross) */
+.burger { display: block; overflow: visible; }
 
-/* Project pages: the hero image starts at the very top, behind the nav */
-.page--project .p-hero { margin-top: calc(-1 * var(--header-h)); }
+/* Content starts below the header; project heroes start at the very top, behind it */
+main { padding-top: var(--header-h); }
+.page--project main { padding-top: 0; }
 
-/* In-page links land below the sticky header instead of under it */
+/* In-page links land below the fixed header instead of under it */
 html { scroll-padding-top: calc(min(100vw, 487.5px) / 390 * 71); }
 @media (min-width: 1024px) {
   html { scroll-padding-top: calc(min(100vw, 1440px) / 1440 * 87); }
 }
+
+/* =========================================================
+   MOTION (GSAP) — see motion.js
+   boot.js adds .motion to <html> before the first paint, unless the visitor
+   has asked their system for reduced motion. Only what the intro animates
+   is hidden here; motion.js reveals it. If scripts fail, boot.js removes
+   .motion after 4 seconds so nothing stays hidden.
+   ========================================================= */
+.motion .hero__logo > span,
+.motion .hero__image,
+.motion:not(.arrive-hero) .page--project .p-hero__bg,
+.motion:not(.arrive-hero) .page--project .p-hero__title,
+.motion .notfound > * { visibility: hidden; }
+
+/* SplitText line masks: let descenders (g, p, y) hang below the trimmed line
+   box, while still hiding a line that sits below its mask */
+.split-line-mask,
+.split-char-mask {
+  overflow: visible !important;
+  clip-path: inset(-0.3em -0.2em -0.3em -0.2em);
+}
+
+/* The About lede indents its first line only, also once it's split into lines.
+   Nothing inside inherits the indent (SplitText's temporary word boxes would
+   each indent themselves and break the measuring); the first line gets it back. */
+.about__lede * { text-indent: 0; }
+.about__lede .split-line-mask:first-child .split-line { text-indent: calc(84 * var(--u)); }
+
+/* Card → project transition: a copy of the project hero that grows out of the card */
+.transition-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  z-index: 40; /* under the header, so the nav keeps blending over it */
+  pointer-events: none;
+}
+.transition-layer .p-hero { will-change: transform, width, height; }
+.transition-layer .p-hero::before { opacity: var(--shade, 1); } /* the hero's shade fades in on the way */
+.transition-layer__from { z-index: -1 !important; }
+
+/* Arriving from a card: the hero image is already zoomed and shifted exactly
+   like the parallax in motion.js starts it (scale 1.16, -8%), so nothing jumps */
+.arrive-hero .page--project .p-hero__bg { transform: translateY(-8%) scale(1.16); }

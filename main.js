@@ -1,6 +1,8 @@
 // Ochre Studio
 
-// Mobile menu (static, no motion yet)
+// Mobile menu: open/close, Escape, focus, scroll lock.
+// The animation lives in motion.js (window.ochreMotion.menu). Without it
+// (reduced motion, or scripts blocked) the menu simply appears and disappears.
 (() => {
   const toggle = document.querySelector('.nav-mobile__toggle');
   const menu = document.getElementById('mobile-menu');
@@ -8,20 +10,35 @@
 
   const closeBtn = menu.querySelector('.menu__close');
   const desktop = window.matchMedia('(min-width: 1024px)');
+  const html = document.documentElement;
+  const motion = () => window.ochreMotion && window.ochreMotion.menu;
+
+  let isOpen = false;
 
   const open = () => {
+    if (isOpen) return;
+    isOpen = true;
     menu.hidden = false;
-    document.documentElement.classList.add('is-menu-open');
+    html.classList.add('is-menu-open');
     toggle.setAttribute('aria-expanded', 'true');
+    motion()?.open();
     closeBtn?.focus();
   };
 
-  const close = ({ restoreFocus = true } = {}) => {
-    if (menu.hidden) return;
-    menu.hidden = true;
-    document.documentElement.classList.remove('is-menu-open');
+  const close = ({ restoreFocus = true, instant = false } = {}) => {
+    if (!isOpen) return;
+    isOpen = false;
     toggle.setAttribute('aria-expanded', 'false');
-    if (restoreFocus) toggle.focus();
+
+    const finish = () => {
+      if (isOpen) return; // reopened while closing
+      menu.hidden = true;
+      html.classList.remove('is-menu-open');
+      if (restoreFocus) toggle.focus({ preventScroll: true });
+    };
+
+    if (motion() && !instant) motion().close(finish);
+    else { motion()?.reset(); finish(); }
   };
 
   toggle.addEventListener('click', open);
@@ -39,6 +56,6 @@
 
   // Never leave the mobile menu open after resizing up to desktop
   desktop.addEventListener('change', (e) => {
-    if (e.matches) close({ restoreFocus: false });
+    if (e.matches) close({ restoreFocus: false, instant: true });
   });
 })();
