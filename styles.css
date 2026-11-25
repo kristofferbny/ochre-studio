@@ -1400,5 +1400,17 @@ html { scroll-padding-top: calc(min(100vw, 487.5px) / 390 * 71); }
 .transition-layer__from { z-index: -1 !important; }
 
 /* Arriving from a card: the hero image is already zoomed and shifted exactly
-   like the parallax in motion.js starts it (scale 1.16, -8%), so nothing jumps */
-.arrive-hero .page--project .p-hero__bg { transform: translateY(-8%) scale(1.16); }
+   like the parallax in motion.js starts it (shift 8 → -8% and 1.16×), so nothing
+   jumps. --ochre-shift is only set while tuning (boot.js). */
+.arrive-hero .page--project .p-hero__bg {
+  transform: translateY(calc(var(--ochre-shift, 8) * -1%)) scale(calc(1 + var(--ochre-shift, 8) / 50));
+}
+
+/* Page changes: the browser cross-fades from the old page to the new one
+   (cross-document View Transitions; Chrome, Edge, Safari 18.2+). After a card
+   transition both frames are identical, so any first-frame difference in the
+   new page is softened instead of cutting in. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-group(root) { animation-duration: 0.35s; }
+}

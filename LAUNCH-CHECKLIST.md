@@ -77,6 +77,8 @@ This is a static site: no server code, no database, no logins, no forms. That re
 - [ ] **Modern formats + responsive images.** Serving WebP/AVIF with `srcset` (smaller files for phones) would roughly halve page weight.
 - [ ] **Run Lighthouse** (Chrome DevTools → Lighthouse) on the live site; aim for 90+ in every category.
 - [x] **Motion scripts:** about 88KB compressed in total (GSAP core, ScrollTrigger, ScrollSmoother, SplitText, CustomEase, Flip, MorphSVG, plus `motion.js`).
+- [x] **Page changes cross-fade** (cross-document View Transitions in Chrome, Edge and Safari 18.2+; other browsers simply load the next page). Project hero photos decode before the first frame, so arriving from a card is seamless.
+- [x] **Tuning panel stays out of the way.** `assets/js/tuner.js` and `assets/css/tuner.css` load only with `?tune` in the address. Tuned values are stored in that browser only, so visitors always get the values written in `motion.js`.
 
 ## 6. Accessibility
 
@@ -115,4 +117,5 @@ This is a static site: no server code, no database, no logins, no forms. That re
 - **Ask the AI to explain anything security-related** before accepting it, and be suspicious of suggestions to disable security features "to make it work".
 - **Test on real devices**, not just the browser's phone preview. The mobile button bug in this project only showed up on a real phone.
 - **Keep the design file as the source of truth,** and note any deliberate deviations (this project: smaller nav padding, full-height mobile menu, self-designed mobile project pages).
+- **Tune motion on the real thing.** Open the site with `?tune`, adjust until it feels right, press "Copy settings" and paste over THE DIAL in `motion.js`. Then commit.
 - **Don't add dependencies you don't need.** This site has none, which means nothing to update and nothing that can be compromised upstream.

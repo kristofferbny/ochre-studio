@@ -3,9 +3,10 @@
 // HOW TO TUNE
 // Everything that decides how Ochre *feels* is in THE DIAL just below.
 // Change a number, save, reload the page.
-// Add ?tune to the address (e.g. http://localhost:5175/?tune) for a small
-// panel that replays the intro, slows everything down and lets you scrub
-// through the intro by hand.
+// Or add ?tune to the address (e.g. http://localhost:5175/?tune) for the
+// tuning panel: sliders and curve editors for everything below, applied live.
+// When it feels right, press "Copy settings" in the panel and paste over
+// THE DIAL here. (?tune=off, or "Exit" in the panel, turns it off again.)
 //
 // Words used here
 //   duration  seconds an animation takes
@@ -26,25 +27,25 @@
      THE DIAL
      ===================================================================== */
 
-  // Ochre's own curves, written like CSS cubic-bezier(x1, y1, x2, y2).
-  // Paste one into cubic-bezier.com to see (and drag) its shape.
-  CustomEase.create('ochre', '0.22, 1, 0.36, 1');        // arrivals: moves off at once, then a long, soft landing
-  CustomEase.create('ochre-travel', '0.7, 0, 0.12, 1');  // things that travel: a heavy start, then a slow glide in
-  CustomEase.create('ochre-leave', '0.5, 0, 0.75, 0');   // leaving a page: gathers pace and goes
-
   const DIAL = {
-    smoothScroll: 1.1,                      // seconds the page takes to catch up with a mouse wheel or trackpad (0 = normal scrolling). Phones always scroll natively.
+    // Ochre's own curves, written like CSS cubic-bezier(x1, y1, x2, y2).
+    curves: {
+      arrive: '0.22, 1, 0.36, 1',   // arrivals: moves off at once, then a long, soft landing
+      travel: '0.7, 0, 0.12, 1',    // things that travel: a heavy start, then a slow glide in
+      leave:  '0.5, 0, 0.75, 0',    // leaving a page: gathers pace and goes
+    },
+    smoothScroll: 1.1,                           // seconds the page takes to catch up with a mouse wheel or trackpad (0 = normal scrolling). Phones always scroll natively.
     lines:    { duration: 1.2, stagger: 0.1 },   // headings rising line by line out of a mask
     chars:    { duration: 1.4, stagger: 0.04 },  // the big "Ochre Studio" letters (hero and footer)
     fade:     { duration: 1.1, y: 24 },          // body copy, labels, buttons: fade in while rising 24px
     image:    { duration: 1.6, zoom: 1.3 },      // frames open upwards while the photo settles from 1.3× zoom
     rule:     { duration: 1.6 },                 // divider lines drawing across
-    parallax: { shift: 8, zoom: 1.16 },          // photos drift ±8% inside their frames as you scroll. zoom must be at least 1 + 2 × shift / 100 so no edge shows. (Also used in styles.css → .arrive-hero)
-    start: 'top 88%',                            // a scroll reveal starts when the element's top reaches 88% down the screen
+    parallax: { shift: 8 },                      // photos drift ±8% inside their frames as you scroll (they zoom just enough to hide the edges)
+    revealAt: 88,                                // a scroll reveal starts when the element's top reaches 88% down the screen
     menu:     { duration: 0.9, closeSpeed: 1.4 },// mobile menu panel; closing plays the opening backwards, 1.4× faster
     leave:    { duration: 0.5 },                 // the page fading out before the next one loads
     flip:     { duration: 1.2 },                 // a project card growing into that project's hero
-    lag: [0.15, 0.3, 0.45],                      // "Objects / Shaped Slowly / In Clay" trail behind the scroll by these seconds (smooth scroll only)
+    lag: 0.15,                                   // "Objects / Shaped Slowly / In Clay" trail behind the scroll, each line 0.15s more (smooth scroll only)
   };
 
   /* ===================================================================== */
@@ -52,7 +53,34 @@
   const html = document.documentElement;
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
-  const tuning = new URLSearchParams(location.search).has('tune');
+  const here = document.currentScript ? document.currentScript.src : location.href;
+  const cleanups = []; // things to undo when the motion is rebuilt
+
+  // Tuning mode (boot.js turns it on with ?tune). Values changed in the panel
+  // are kept in this browser and override THE DIAL until you reset or exit.
+  const CODE_DIAL = JSON.parse(JSON.stringify(DIAL));
+  let tuning = false;
+  try {
+    tuning = sessionStorage.getItem('ochre:tune') === '1';
+    if (tuning) merge(DIAL, JSON.parse(localStorage.getItem('ochre:dial') || '{}'));
+  } catch (e) { /* storage blocked: code values */ }
+
+  function merge(target, src) {
+    Object.keys(target).forEach((k) => {
+      if (!(k in src)) return;
+      if (typeof target[k] === 'object') merge(target[k], src[k] || {});
+      else if (typeof src[k] === typeof target[k]) target[k] = src[k];
+    });
+  }
+
+  const revealStart = () => `top ${DIAL.revealAt}%`;
+  const parallaxZoom = () => 1 + DIAL.parallax.shift / 50; // just enough zoom to hide the edges
+
+  function applyCurves() {
+    CustomEase.create('ochre', DIAL.curves.arrive);
+    CustomEase.create('ochre-travel', DIAL.curves.travel);
+    CustomEase.create('ochre-leave', DIAL.curves.leave);
+  }
 
   // How far down a line (or letter) must sit to be fully hidden under its mask.
   // Masks reach 0.3em past their line so descenders aren't cut (see .split-line-mask).
@@ -78,7 +106,7 @@
         duration: DIAL.lines.duration,
         stagger: DIAL.lines.stagger,
         ease: 'ochre',
-        scrollTrigger: { trigger, start: DIAL.start },
+        scrollTrigger: { trigger, start: revealStart() },
       }),
     });
   }
@@ -94,9 +122,57 @@
         duration: DIAL.fade.duration,
         stagger,
         ease: 'ochre',
-        scrollTrigger: { trigger: container, start: DIAL.start },
+        scrollTrigger: { trigger: container, start: revealStart() },
       });
     });
+  }
+
+  // Big words split into letters, each pinned to exactly where it sits in the
+  // plain text (browsers lay split letters out slightly differently: kerning,
+  // and in some browsers the height of the line). The word's box is frozen
+  // while split, so nothing around it moves. restore() puts the plain text back.
+  function splitLetters(els) {
+    const glyphs = (el) => {
+      const out = [];
+      const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const range = document.createRange();
+      let node;
+      while ((node = walk.nextNode())) {
+        for (let i = 0; i < node.length; i++) {
+          if (/\s/.test(node.data[i])) continue;
+          range.setStart(node, i);
+          range.setEnd(node, i + 1);
+          out.push(range.getBoundingClientRect());
+        }
+      }
+      return out;
+    };
+    const before = els.map(glyphs);
+    els.forEach((el) => {
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      const box = el.getBoundingClientRect();
+      el.style.width = `${box.width / fs}em`; // in em, so it still scales if the window is resized
+      el.style.height = `${box.height / fs}em`;
+    });
+    const split = SplitText.create(els, { type: 'chars', mask: 'chars', charsClass: 'split-char', aria: 'none' });
+    els.forEach((el, i) => {
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      const after = glyphs(el);
+      split.masks.filter((m) => el.contains(m)).forEach((mask, j) => {
+        const a = before[i][j];
+        const b = after[j];
+        if (a && b) mask.style.translate = `${(a.left - b.left) / fs}em ${(a.top - b.top) / fs}em`;
+      });
+    });
+    let done = false;
+    const restore = () => {
+      if (done) return;
+      done = true;
+      split.revert();
+      els.forEach((el) => { el.style.width = ''; el.style.height = ''; });
+    };
+    cleanups.push(restore);
+    return { chars: split.chars, restore };
   }
 
   // An image frame opens from the bottom edge while the photo settles from a zoom
@@ -117,7 +193,7 @@
   function drift(img, frame, { start = 'top bottom' } = {}) {
     if (!img || !frame) return;
     // y: 0 drops the pixel offset GSAP reads from the CSS hand-off (.arrive-hero); yPercent takes over
-    gsap.set(img, { y: 0, scale: DIAL.parallax.zoom });
+    gsap.set(img, { y: 0, scale: parallaxZoom() });
     gsap.fromTo(img,
       { yPercent: -DIAL.parallax.shift },
       { yPercent: DIAL.parallax.shift, ease: 'none',
@@ -136,10 +212,10 @@
     tl.add(openFrame(frame), 0);
 
     // "Ochre Studio" (desktop): letter by letter, each rising out of its own mask
-    const split = SplitText.create(words, { type: 'chars', mask: 'chars', charsClass: 'split-char', aria: 'none' });
-    tl.from(split.chars, { y: below, duration: DIAL.chars.duration, stagger: DIAL.chars.stagger }, 0.25);
-    // Once landed, put the words back together: separate letters lose the font's kerning
-    if (!tuning) tl.eventCallback('onComplete', () => split.revert());
+    const letters = splitLetters(words);
+    tl.from(letters.chars, { y: below, duration: DIAL.chars.duration, stagger: DIAL.chars.stagger }, 0.25);
+    // Once landed, put the plain words back (kept split while tuning, so the intro can be replayed)
+    if (!tuning) tl.eventCallback('onComplete', letters.restore);
     return tl;
   }
 
@@ -190,11 +266,11 @@
 
     // Footer lockup: "Ochre" and "Studio" letter by letter
     $$('.footer__bottom').forEach((bottom) => {
-      const split = SplitText.create($$('.footer__word', bottom), { type: 'chars', mask: 'chars', charsClass: 'split-char', aria: 'none' });
-      gsap.from(split.chars, {
+      const letters = splitLetters($$('.footer__word', bottom));
+      gsap.from(letters.chars, {
         y: below, duration: DIAL.chars.duration, stagger: DIAL.chars.stagger, ease: 'ochre',
         scrollTrigger: { trigger: bottom, start: 'top 95%' },
-        onComplete: () => split.revert(), // restore kerning once the letters have landed
+        onComplete: letters.restore, // the plain words back once the letters have landed
       });
     });
 
@@ -213,7 +289,7 @@
     $$('.process__rule, .p-field__rule').forEach((rule) => {
       gsap.from(rule, {
         scaleX: 0, transformOrigin: 'left center', duration: DIAL.rule.duration, ease: 'ochre-travel',
-        scrollTrigger: { trigger: rule, start: DIAL.start },
+        scrollTrigger: { trigger: rule, start: revealStart() },
       });
     });
 
@@ -221,11 +297,11 @@
     $$('.p-intro__image, .contact__intro-image, .contact__image, .footer__image').forEach((frame) => {
       openFrame(frame, {
         zoom: !frame.matches('.contact__intro-image'), // that photo is mirrored on phones; leave its transform alone
-        scrollTrigger: { trigger: frame, start: DIAL.start },
+        scrollTrigger: { trigger: frame, start: revealStart() },
       });
     });
     $$('.p-gallery__item').forEach((frame, i) => {
-      openFrame(frame, { delay: (i % 2) * 0.15, scrollTrigger: { trigger: frame, start: DIAL.start } });
+      openFrame(frame, { delay: (i % 2) * 0.15, scrollTrigger: { trigger: frame, start: revealStart() } });
     });
 
     // Ceramics: whichever pieces arrive together open one after another
@@ -236,7 +312,7 @@
         gsap.set($('.product__name', p), { autoAlpha: 0 });
       });
       ScrollTrigger.batch(products, {
-        start: DIAL.start,
+        start: revealStart(),
         once: true,
         onEnter: (batch) => batch.forEach((p, i) => {
           openFrame($('.product__image', p), { delay: i * 0.12 })
@@ -247,7 +323,7 @@
 
     // Smooth scroll only: the Objects heading lines trail behind, each a little more
     if (smoother) {
-      smoother.effects('.objects__line', { lag: (i) => DIAL.lag[i] ?? 0.3 });
+      smoother.effects('.objects__line', { lag: (i) => DIAL.lag * (i + 1) });
     }
   }
 
@@ -345,7 +421,7 @@
 
     // Start the photos exactly as the card shows them (it is mid-parallax)
     const from = { scale: gsap.getProperty(cardImg, 'scale'), yPercent: gsap.getProperty(cardImg, 'yPercent') };
-    const to = { scale: DIAL.parallax.zoom, yPercent: -DIAL.parallax.shift, duration: DIAL.flip.duration, ease: 'ochre-travel' };
+    const to = { scale: parallaxZoom(), yPercent: -DIAL.parallax.shift, duration: DIAL.flip.duration, ease: 'ochre-travel' };
 
     // 4. Flip: from the card's box to the hero's box
     const tl = Flip.from(state, {
@@ -418,55 +494,39 @@
     if (smoother) smoother.paused(false);
   });
 
-  /* ---------- Tuner (only with ?tune in the address) ----------
-     A small panel to replay, slow down and scrub the page intro while you
-     adjust THE DIAL. (GSAP's own GSDevTools draws its panel with inline
-     styles, which this site's security policy blocks, so this is a tiny
-     stand-in built only from things the policy allows.) */
+  /* ---------- Tuning panel (only in tuning mode) ----------
+     The panel lives in assets/js/tuner.js and assets/css/tuner.css and is
+     only loaded with ?tune. It talks to this file through window.ochreTune. */
 
-  function loadTuner(intro) {
-    if (!tuning) return;
-    const panel = document.createElement('div');
-    panel.setAttribute('role', 'group');
-    panel.setAttribute('aria-label', 'Motion tuner');
-    panel.innerHTML =
-      '<button type="button">Replay intro</button>' +
-      '<label>Scrub <input type="range" min="0" max="1" step="0.001" value="0"></label>' +
-      '<label>Speed <input type="range" min="0.1" max="2" step="0.05" value="1"></label>' +
-      '<output></output>';
-    Object.assign(panel.style, {
-      position: 'fixed', left: '12px', bottom: '12px', zIndex: '1000',
-      display: 'flex', alignItems: 'center', gap: '16px', padding: '10px 16px',
-      background: '#fff', color: '#000', border: '1px solid #000', borderRadius: '999px',
-      font: '500 12px/1 "General Sans", sans-serif',
-    });
-    const [replay] = panel.getElementsByTagName('button');
-    const [scrub, speed] = panel.getElementsByTagName('input');
-    const out = panel.querySelector('output');
-    replay.style.textDecoration = 'underline';
-    [scrub, speed].forEach((r) => Object.assign(r.style, { width: '120px', verticalAlign: 'middle' }));
+  let currentIntro = null;
 
-    const show = () => {
-      const t = intro ? `${intro.time().toFixed(2)}s of ${intro.duration().toFixed(2)}s · ` : 'no intro on this visit · ';
-      out.textContent = t + `${(+speed.value).toFixed(2)}× speed`;
-      if (intro) scrub.value = intro.progress();
+  function loadTuner() {
+    window.ochreTune = {
+      DIAL,
+      CODE_DIAL,
+      intro: () => currentIntro,
+      menu: () => window.ochreMotion && window.ochreMotion.menu,
+      rebuild,
+      save() { try { localStorage.setItem('ochre:dial', JSON.stringify(DIAL)); } catch (e) { /* not saved */ } },
+      forget() { try { localStorage.removeItem('ochre:dial'); } catch (e) { /* nothing saved */ } },
     };
-    if (intro) {
-      intro.eventCallback('onUpdate', show);
-      replay.addEventListener('click', () => intro.restart());
-      scrub.addEventListener('input', () => { intro.pause().progress(+scrub.value); show(); });
-    } else {
-      replay.disabled = scrub.disabled = true;
-    }
-    speed.addEventListener('input', () => { gsap.globalTimeline.timeScale(+speed.value); show(); });
-    show();
-    document.body.append(panel);
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = new URL('assets/css/tuner.css', here).href;
+    document.head.append(css);
+    const js = document.createElement('script');
+    js.src = new URL('assets/js/tuner.js', here).href;
+    document.body.append(js);
   }
 
-  /* ---------- Start ---------- */
+  /* ---------- Start (and rebuild, when the tuning panel changes a value) ---------- */
 
-  fontsReady.then(() => {
-    const mm = gsap.matchMedia();
+  let mm = null;
+  let firstRun = true;
+
+  function start() {
+    applyCurves();
+    mm = gsap.matchMedia();
     mm.add({
       motion: '(prefers-reduced-motion: no-preference)',
       fine: '(hover: hover) and (pointer: fine)', // mouse or trackpad
@@ -484,7 +544,7 @@
         : null;
 
       scrollMotion(smoother);
-      const intro = introHome() || introProject() || introNotFound();
+      currentIntro = introHome() || introProject() || introNotFound();
       window.ochreMotion = { menu: menuMotion() };
       const offLinks = linkHandling(smoother);
 
@@ -502,20 +562,31 @@
         offWrapper = () => wrapper.removeEventListener('scroll', onScroll);
 
         // Arrived with #get-in-touch etc. in the address: land under the header
-        const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        const target = firstRun && location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
         if (target) {
           const offset = headerH() + (parseFloat(getComputedStyle(target).scrollMarginTop) || 0);
           requestAnimationFrame(() => smoother.scrollTo(target, false, `top ${offset}px`));
         }
       }
-
-      loadTuner(intro);
+      firstRun = false;
 
       return () => {
         offLinks();
         offWrapper();
+        cleanups.splice(0).forEach((undo) => undo());
         delete window.ochreMotion;
       };
     });
+  }
+
+  // Undo every animation and set them all up again with the current DIAL
+  function rebuild() {
+    if (mm) mm.revert();
+    start();
+  }
+
+  fontsReady.then(() => {
+    start();
+    if (tuning) loadTuner();
   });
 })();

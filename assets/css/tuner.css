@@ -1,0 +1,223 @@
+/* Ochre Studio — motion tuning panel (only loaded with ?tune, see assets/js/tuner.js) */
+
+.tuner {
+  --t-bg: #fff;
+  --t-fg: #111;
+  --t-muted: #777;
+  --t-line: #e4e1dc;
+  --t-soft: #f6f4f1;
+  --t-accent: #b4692c; /* ochre */
+
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: min(340px, calc(100vw - 24px));
+  background: var(--t-bg);
+  color: var(--t-fg);
+  border: 1px solid var(--t-fg);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  font: 400 12px/1.35 "General Sans", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0;
+  text-align: left;
+}
+.tuner.is-left { right: auto; left: 12px; }
+.tuner.is-collapsed { bottom: auto; width: auto; }
+.tuner.is-collapsed .tuner__body,
+.tuner.is-collapsed .tuner__foot { display: none; }
+.tuner.is-collapsed .tuner__head { border-bottom: 0; gap: 16px; }
+
+.tuner button { font: inherit; color: inherit; cursor: pointer; }
+.tuner button:disabled { opacity: 0.35; cursor: default; }
+.tuner :focus-visible { outline: 2px solid var(--t-accent); outline-offset: 2px; }
+
+/* Head */
+.tuner__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 10px 16px;
+  border-bottom: 1px solid var(--t-line);
+}
+.tuner__title { font-weight: 500; font-size: 14px; }
+.tuner__head-btns { display: flex; gap: 4px; }
+.tuner__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 15px;
+  line-height: 1;
+}
+.tuner__icon:hover { background: var(--t-soft); }
+
+/* Body */
+.tuner__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 16px 16px;
+}
+.tuner__section { padding-top: 18px; }
+.tuner__section + .tuner__section { margin-top: 14px; border-top: 1px solid var(--t-line); }
+.tuner__h {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--t-muted);
+}
+.tuner__intro { margin-top: 6px; color: var(--t-muted); }
+
+/* Buttons and chips */
+.tuner__btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.tuner__btn {
+  padding: 7px 12px;
+  border: 1px solid var(--t-fg);
+  border-radius: 999px;
+  background: var(--t-bg);
+}
+.tuner__btn:hover:not(:disabled) { background: var(--t-soft); }
+.tuner__btn--primary { background: var(--t-fg); color: var(--t-bg) !important; }
+.tuner__btn--primary:hover:not(:disabled) { background: #333; }
+.tuner__chip {
+  padding: 3px 8px;
+  border: 1px solid var(--t-line);
+  border-radius: 999px;
+  background: var(--t-bg);
+  font-size: 11px;
+}
+.tuner__chip:hover { border-color: var(--t-muted); }
+.tuner__chip.is-on { border-color: var(--t-fg); background: var(--t-fg); color: var(--t-bg) !important; }
+
+.tuner__speeds { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 12px; }
+.tuner__speeds .tuner__label { margin-right: 6px; }
+
+/* Rows */
+.tuner__row,
+.tuner__scrub { display: block; margin-top: 14px; }
+.tuner__row-top,
+.tuner__scrub { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.tuner__label { font-weight: 500; }
+.tuner__value {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--t-fg);
+}
+.tuner__reset {
+  visibility: hidden;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: var(--t-accent) !important;
+  font-size: 13px;
+  line-height: 1;
+}
+.tuner__reset:hover { background: var(--t-soft); }
+.is-changed > .tuner__row-top .tuner__reset { visibility: visible; }
+.is-changed > .tuner__row-top .tuner__label::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  vertical-align: 1px;
+  border-radius: 50%;
+  background: var(--t-accent);
+}
+.tuner input[type="range"] {
+  display: block;
+  width: 100%;
+  margin: 6px 0 0;
+  accent-color: var(--t-accent);
+}
+.tuner__scrub input[type="range"] { flex-basis: 100%; }
+.tuner__hint { margin-top: 2px; color: var(--t-muted); font-size: 11px; }
+
+/* Curve editor */
+.curve {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--t-line);
+  border-radius: 12px;
+}
+.curve__grid {
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+.curve__graph {
+  display: block;
+  width: 128px;
+  height: 128px;
+  overflow: visible;
+  touch-action: none;
+  user-select: none;
+}
+.curve__frame { fill: var(--t-soft); stroke: var(--t-line); }
+.curve__guide { stroke: #cfcac3; stroke-dasharray: 3 3; }
+.curve__axis { font-size: 9px; fill: var(--t-muted); }
+.curve__arm { stroke: #999; stroke-width: 1; }
+.curve__path { fill: none; stroke: var(--t-accent); stroke-width: 2.5; stroke-linecap: round; }
+.curve__hit { fill: transparent; }
+.curve__dot-h { fill: var(--t-bg); stroke: var(--t-fg); stroke-width: 1.5; }
+.curve__handle { cursor: grab; }
+.curve__handle.is-dragging { cursor: grabbing; }
+.curve__handle:hover .curve__dot-h,
+.curve__handle.is-dragging .curve__dot-h { fill: var(--t-accent); stroke: var(--t-accent); }
+
+.curve__side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.curve__value {
+  width: 100%;
+  padding: 5px 7px;
+  border: 1px solid var(--t-line);
+  border-radius: 6px;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  color: var(--t-fg);
+  background: var(--t-bg);
+}
+.curve__track {
+  position: relative;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--t-soft);
+  cursor: pointer;
+}
+.curve__dot {
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--t-accent);
+}
+.curve__chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.curve.is-changed > .tuner__row-top .tuner__reset { visibility: visible; }
+
+/* Foot */
+.tuner__foot {
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--t-line);
+  background: var(--t-bg);
+}
+.tuner__foot .tuner__btns { margin-top: 0; }
+.tuner__status { margin-top: 8px; color: var(--t-muted); font-size: 11px; }
+.tuner__code {
+  display: block;
+  width: 100%;
+  height: 140px;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid var(--t-line);
+  border-radius: 8px;
+  font: 10px/1.4 ui-monospace, Menlo, monospace;
+  white-space: pre;
+}
