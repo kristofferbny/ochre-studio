@@ -658,7 +658,9 @@ html.is-menu-open { overflow: hidden; }
   /* ---------- Hero ---------- */
   .hero {
     gap: calc(64 * var(--u));
-    padding: 0 calc(80 * var(--u)) calc(80 * var(--u));
+    /* 32 on top gives back what the slimmer nav took (Figma: 64 under the nav text),
+       so nav → lockup matches lockup → photo: 64 */
+    padding: calc(32 * var(--u)) calc(80 * var(--u)) calc(80 * var(--u));
   }
 
   .hero__logo {
